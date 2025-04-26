@@ -1,0 +1,85 @@
+-- 1. Suppliers
+CREATE TABLE Suppliers (
+    SupplierID INT PRIMARY KEY IDENTITY(1,1),
+    SupplierName NVARCHAR(100) NOT NULL,
+    ContactName NVARCHAR(100),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20),
+    Address NVARCHAR(255)
+);
+
+-- 2. Products
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY IDENTITY(1,1),
+    ProductName NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(255),
+    Category NVARCHAR(50),
+    UnitPrice DECIMAL(10, 2) NOT NULL,
+    SupplierID INT,
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+);
+
+-- 3. Inventory
+CREATE TABLE Inventory (
+    InventoryID INT PRIMARY KEY IDENTITY(1,1),
+    ProductID INT NOT NULL,
+    QuantityInStock INT NOT NULL DEFAULT 0,
+    ReorderLevel INT NOT NULL DEFAULT 10,
+    LastRestockDate DATE,
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- 4. Customers
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerName NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20),
+    Address NVARCHAR(255)
+);
+
+-- 5. Sales
+CREATE TABLE Sales (
+    SaleID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT,
+    SaleDate DATETIME NOT NULL DEFAULT GETDATE(),
+    TotalAmount DECIMAL(10, 2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- 6. SalesDetails
+CREATE TABLE SalesDetails (
+    SalesDetailID INT PRIMARY KEY IDENTITY(1,1),
+    SaleID INT NOT NULL,
+    ProductID INT NOT NULL,
+    Quantity INT NOT NULL,
+    UnitPrice DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (SaleID) REFERENCES Sales(SaleID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- Insert sample suppliers
+INSERT INTO Suppliers (SupplierName, ContactName, Email, Phone, Address)
+VALUES 
+('Tech Supplies Co.', 'Alice Smith', 'alice@techsupplies.com', '123-456-7890', '123 Tech Lane'),
+('Office Furniture Inc.', 'Bob Johnson', 'bob@officefurniture.com', '098-765-4321', '456 Office Park');
+
+-- Insert sample products
+INSERT INTO Products (ProductName, Description, Category, UnitPrice, SupplierID)
+VALUES 
+('Laptop', '15-inch display, 8GB RAM', 'Electronics', 1200.00, 1),
+('Desk Chair', 'Ergonomic office chair', 'Furniture', 150.00, 2),
+('Notebook', '200-page ruled notebook', 'Stationery', 2.50, 1);
+
+-- Insert initial inventory levels
+INSERT INTO Inventory (ProductID, QuantityInStock, ReorderLevel, LastRestockDate)
+VALUES 
+(1, 10, 5, '2025-04-01'),
+(2, 5, 2, '2025-04-05'),
+(3, 100, 20, '2025-04-10');
+
+-- Insert sample customers
+INSERT INTO Customers (CustomerName, Email, Phone, Address)
+VALUES 
+('John Doe', 'john.doe@example.com', '555-1234', '789 Main St'),
+('Jane Smith', 'jane.smith@example.com', '555-5678', '321 Oak Ave');
