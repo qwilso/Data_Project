@@ -1,0 +1,148 @@
+/*
+Basic JOINs & Filtering
+List all products along with their supplier name and current inventory level
+*/
+SELECT
+  p.ProductID,
+  p.ProductName,
+  s.SupplierName,
+  i.QuantityInStock
+FROM Products p
+JOIN Suppliers s
+  ON p.SupplierID = s.SupplierID
+LEFT JOIN Inventory i
+  ON p.ProductID = i.ProductID;
+
+/* 
+Aggregation & GROUP BY
+Show total units sold per product: 
+*/
+SELECT
+  p.ProductID,
+  p.ProductName,
+  SUM(sd.Quantity) AS TotalUnitsSold
+FROM Products p
+JOIN SalesDetails sd
+  ON p.ProductID = sd.ProductID
+GROUP BY p.ProductID, p.ProductName;
+
+/*
+Filtering with HAVING
+Which customers have spent over $1,000 in total?
+*/
+SELECT
+  c.CustomerID,
+  c.CustomerName,
+  SUM(sd.Quantity * sd.UnitPrice) AS TotalSpent
+FROM Customers c
+JOIN Sales s
+  ON c.CustomerID = s.CustomerID
+JOIN SalesDetails sd
+  ON s.SaleID = sd.SaleID
+GROUP BY c.CustomerID, c.CustomerName
+HAVING SUM(sd.Quantity * sd.UnitPrice) > 1000;
+
+/*
+Window Functions
+Compute a running total of sales by date:
+*/
+SELECT 
+  s.SaleDate,
+  SUM(sd.Quantity * sd.UnitPrice) OVER (ORDER BY s.SaleDate) AS RunningTotal
+FROM Sales s
+JOIN SalesDetails sd
+  ON s.SaleID = sd.SaleID
+ORDER BY s.SaleDate;
+
+/*
+Common Table Expressions (CTEs) & Date Functions
+Monthly sales summary for the past year:
+*/
+WITH MonthlySales AS (
+  SELECT
+    YEAR(s.SaleDate) AS SaleYear,
+    MONTH(s.SaleDate) AS SaleMonth,
+    SUM(sd.Quantity * sd.UnitPrice) AS TotalSales
+  FROM Sales s
+  JOIN SalesDetails sd
+    ON s.SaleID = sd.SaleID
+  WHERE s.SaleDate >= DATEADD(YEAR, -1, GETDATE())
+  GROUP BY YEAR(s.SaleDate), MONTH(s.SaleDate)
+)
+SELECT
+  SaleYear,
+  SaleMonth,
+  TotalSales
+FROM MonthlySales
+ORDER BY SaleYear, SaleMonth;
+
+/*
+Identifying Anomalies with Subqueries
+Find products that have never been sold:
+*/
+SELECT
+  p.ProductID,
+  p.ProductName
+FROM Products p
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM SalesDetails sd
+  WHERE sd.ProductID = p.ProductID
+);
+
+/*
+Ranking with ROW_NUMBER()
+Top 5 customers by total spend:
+*/
+SELECT
+  c.CustomerID,
+  c.CustomerName,
+  SUM(sd.Quantity * sd.UnitPrice) AS TotalSpent,
+  ROW_NUMBER() OVER (ORDER BY SUM(sd.Quantity * sd.UnitPrice) DESC) AS Rank
+FROM Customers c
+JOIN Sales s
+  ON c.CustomerID = s.CustomerID
+JOIN SalesDetails sd
+  ON s.SaleID = sd.SaleID
+GROUP BY c.CustomerID, c.CustomerName
+ORDER BY Rank
+OFFSET 0 ROWS
+FETCH NEXT 5 ROWS ONLY;
+
+/*
+PIVOT for Crosstab Reports
+Show sales by category for each month in 2025:
+*/
+SELECT *
+FROM (
+  SELECT
+    YEAR(s.SaleDate) AS SaleYear,
+    MONTH(s.SaleDate) AS SaleMonth,
+    p.Category,
+    SUM(sd.Quantity * sd.UnitPrice) AS TotalSales
+  FROM Sales s
+  JOIN SalesDetails sd
+    ON s.SaleID = sd.SaleID
+  JOIN Products p
+    ON sd.ProductID = p.ProductID
+  WHERE YEAR(s.SaleDate) = 2025
+  GROUP BY YEAR(s.SaleDate), MONTH(s.SaleDate), p.Category
+) AS SourceTable
+PIVOT (
+  SUM(TotalSales)
+  FOR Category IN ([Electronics], [Clothing], [Home & Garden])
+) AS PivotTable
+ORDER BY SaleYear, SaleMonth;
+
+/*
+Updating with JOINs
+Automatically restock items below the reorder level to 50 units:
+*/
+UPDATE i
+SET i.QuantityInStock = 50,
+    i.LastRestockDate = GETDATE()
+FROM Inventory i
+WHERE i.QuantityInStock < i.ReorderLevel;
+
+
+
