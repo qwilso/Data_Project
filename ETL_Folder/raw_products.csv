@@ -1,0 +1,101 @@
+id,name,category,price,in_stock,added_on
+1,SEE,Produce,$9.4,TRUE,2023/11/22
+2,ACTUALLY,Frozen,USD 13.66,1,
+3,Once,PRODUCE,USD 8.51,TRUE,"September 10, 2024"
+4,hit,Baking,USD 5.43,1,"August 13, 2024"
+5,Likely,Baking,$23.04,Yes,"February 05, 2023"
+6,ENJOY,Bakery,USD 19.44,1,2023/11/19
+7,travel,Frozen,USD 5.97,Yes,
+8,amount,Beverages,USD 20.33,,2024/10/21
+9,TAX,Beverages,7.55,1,2022/07/22
+10,Onto,BEVERAGES,5.91,Available,2024/01/30
+11,Authority,Snacks,USD 9.52,Available,2024/11/23
+12,military,SNACKS,USD 15.86,,
+13,catch,Dairy,21.02,Available,"December 21, 2021"
+14,SAME,BEVERAGES,$11.48,,2021/09/16
+15,NEW,Produce,5.43,TRUE,
+16,Build,Dairy,11.33,TRUE,
+17,peace,Bakery,$20.93,Available,
+18,ANY,MEAT,$5.03,Available,
+19,Suffer,MEAT,USD 24.19,,2022/02/09
+20,GAS,BEVERAGES,USD 16.6,Yes,2022/05/20
+21,write,BAKERY,22.53,Available,
+22,police,Baking,USD 22.71,Yes,2020/02/17
+23,AFFECT,DAIRY,16.74,Available,"November 25, 2022"
+24,Entire,Meat,8.64,Available,
+25,South,BEVERAGES,17.89,Available,
+26,Up,MEAT,USD 9.3,,2022/04/20
+27,Notice,Dairy,4.07,,"March 29, 2024"
+28,tough,BAKERY,6.72,Yes,
+29,Their,FROZEN,$9.69,1,2020/11/07
+30,natural,PRODUCE,$3.24,1,"May 26, 2024"
+31,METHOD,Produce,21.52,,2023/08/14
+32,Of,Dairy,19.48,Yes,"April 04, 2020"
+33,FOLLOW,Baking,15.56,1,2022/12/11
+34,act,Produce,USD 4.66,Available,"July 30, 2023"
+35,LET,PRODUCE,USD 1.07,Available,2024/08/28
+36,land,BEVERAGES,USD 10.21,Yes,
+37,either,BEVERAGES,23.31,TRUE,
+38,REST,Snacks,14.96,Yes,"June 22, 2023"
+39,SAVE,Produce,16.91,TRUE,
+40,ABOVE,SNACKS,$20.25,1,2024/01/20
+41,Television,Snacks,2.16,,2023/04/11
+42,YET,Meat,23.61,Available,"October 30, 2023"
+43,article,BEVERAGES,USD 12.65,,
+44,Structure,PRODUCE,USD 13.37,,2020/10/27
+45,THOSE,Produce,$12.0,Yes,2021/03/17
+46,INSIDE,PRODUCE,$6.71,TRUE,
+47,Name,Beverages,16.7,1,"August 13, 2024"
+48,Note,Bakery,$23.86,Yes,
+49,SPEECH,BAKERY,$16.82,Available,"April 30, 2025"
+50,tonight,Meat,USD 6.06,Yes,"August 30, 2021"
+51,Environment,Snacks,$11.68,,2024/08/23
+52,Sit,PRODUCE,10.6,Available,"December 31, 2021"
+53,KID,Bakery,20.22,Yes,
+54,morning,SNACKS,USD 2.98,Available,"August 01, 2023"
+55,degree,DAIRY,$11.12,,
+56,Capital,Dairy,$22.11,,2022/04/30
+57,Wear,FROZEN,USD 7.09,Available,2022/05/24
+58,everything,BAKERY,$12.46,TRUE,2023/03/27
+59,Modern,MEAT,$3.14,1,
+60,room,Dairy,$20.01,Available,2022/05/26
+61,student,BEVERAGES,7.44,TRUE,"May 31, 2023"
+62,May,Beverages,1.57,,
+63,SELL,BAKERY,20.73,1,
+64,open,Snacks,8.76,1,
+65,PARTNER,Beverages,$3.81,1,"November 30, 2023"
+66,soon,DAIRY,22.94,Available,2024/07/07
+67,investment,DAIRY,1.57,1,"April 04, 2023"
+68,Industry,FROZEN,$2.57,TRUE,"June 20, 2021"
+69,they,BEVERAGES,$15.65,Yes,"October 25, 2024"
+70,Visit,Beverages,USD 2.84,1,"June 27, 2022"
+71,Seek,Produce,$13.75,Yes,2021/03/30
+72,Country,Dairy,3.95,Yes,2021/11/15
+73,Long,Dairy,21.3,1,2024/08/02
+74,unit,BEVERAGES,USD 20.45,Available,2022/12/17
+75,focus,Baking,$5.06,,"November 16, 2022"
+76,Better,FROZEN,5.29,1,
+77,Base,FROZEN,USD 16.94,TRUE,2025/02/07
+78,despite,BAKERY,14.13,Yes,
+79,ARM,MEAT,$11.21,Available,"June 27, 2021"
+80,Hear,Dairy,USD 18.76,,"September 04, 2020"
+81,rule,BEVERAGES,USD 1.82,Available,"June 15, 2020"
+82,MIGHT,MEAT,USD 5.47,,"March 25, 2024"
+83,These,MEAT,$7.48,,2021/10/12
+84,HARD,Meat,1.32,Yes,"April 12, 2025"
+85,draw,Beverages,15.54,TRUE,2024/03/10
+86,save,Frozen,$12.58,Yes,
+87,ANSWER,Bakery,$22.27,Yes,2023/03/15
+88,TEST,FROZEN,11.96,1,2025/04/13
+89,Know,FROZEN,USD 22.13,,"March 08, 2023"
+90,fine,MEAT,$21.7,,
+91,LAW,Beverages,USD 17.14,,
+92,Two,Snacks,$16.33,,
+93,Scientist,Frozen,USD 4.7,,
+94,tax,DAIRY,$19.94,,
+95,step,Snacks,22.35,,2024/06/21
+96,SIT,Snacks,$24.93,,"June 08, 2022"
+97,GOOD,Beverages,$15.23,,
+98,WISH,Snacks,$19.04,Yes,
+99,structure,MEAT,3.61,,
+100,ask,Beverages,$16.03,TRUE,2020/02/18
