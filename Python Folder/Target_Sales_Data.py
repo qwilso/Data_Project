@@ -11,9 +11,9 @@ base_path = os.path.dirname(os.path.abspath(__file__)) # The 'Python Folder'
 project_root = os.path.dirname(base_path)              # The 'Data_Project' folder
 
 # Define folder paths
-SOURCE_DIR = os.path.join(project_root, 'Source_Folder')
-TARGET_DIR = os.path.join(project_root, 'Target_Folder')
-ARCHIVE_DIR = os.path.join(project_root, 'Archive_Folder')
+SOURCE_DIR = os.path.join(project_root, 'ETL_Folder', 'Source_Folder')
+TARGET_DIR = os.path.join(project_root, 'ETL_Folder', 'Target_Folder')
+ARCHIVE_DIR = os.path.join(project_root, 'ETL_Folder', 'Archive_Folder')
 
 # --- 2. LOAD ENVIRONMENT VARIABLES ---
 # We point load_dotenv directly to the file in the current script's folder
