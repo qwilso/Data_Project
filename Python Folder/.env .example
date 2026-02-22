@@ -1,0 +1,14 @@
+# Security: Ignore the file containing real passwords
+.env
+
+# MacOS: Ignore system files that clutter GitHub
+.DS_Store
+
+# Python: Ignore temporary cache files
+__pycache__/
+*.pyc
+
+# Data: Ignore the actual CSVs (keep your repo clean)
+Source Folder/*.csv
+Target Folder/*.csv
+Archive_Folder/*.csv

@@ -1,0 +1,13 @@
+-- This script creates the 'Single Source of Truth' table for the Finance Team.
+-- It ensures data integrity by enforcing data types and non-null values.
+
+CREATE TABLE FIN_SALES_REPORTING_BASE (
+    TRANS_ID INT PRIMARY KEY,               -- Unique ID from Source
+    CUSTOMER_FULL_NAME VARCHAR(255),        -- Standardized Name
+    CALENDAR_DATE DATE,                     -- Converted from String to Date
+    REPORTING_REGION VARCHAR(50),           -- Cleaned Regional Tag
+    NET_SALES_AMT DECIMAL(18, 2),           -- Cleaned Numeric Value
+    TAX_AMT DECIMAL(18, 2),                 -- Calculated in ETL
+    GROSS_SALES_AMT DECIMAL(18, 2),         -- Calculated in ETL
+    LOAD_TIMESTAMP DATETIME DEFAULT GETDATE() -- Audit timestamp
+);
