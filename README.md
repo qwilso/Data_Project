@@ -1,5 +1,5 @@
 SUMMARY
-In this project, I bridged the gap between raw, disconnected data sources and the Finance team’s reporting needs. By designing an automated ETL (Extract, Transform, Load) process, I reduced manual data entry by 20 hours per week and eliminated errors caused by inconsistent formatting across regional offices.
+In this project, I bridged the gap between raw, disconnected data sources and the Finance team’s reporting needs. By designing an automated ETL (Extract, Transform, Load) process, I reduced manual data entry by 4 hours per week and eliminated errors caused by inconsistent formatting across regional offices.
 
 Business Challenge
 The Finance team was receiving sales reports in different formats (CSV, Excel, and API exports). Because the data wasn't "talking to each other", leadership couldn't get an accurate view of weekly revenue without hours of manual cleanup.
