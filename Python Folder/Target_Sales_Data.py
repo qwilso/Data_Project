@@ -34,7 +34,9 @@ def run_etl_pipeline():
         f"DATABASE={DB_NAME};"
         f"UID={DB_USER};"
         f"PWD={DB_PASS};"
-        "Encrypt=no;"
+        "Encrypt=yes;"
+        "TrustServerCertificate=yes;" 
+        "ConnectTimeout=30;"
     )
     
     try:
