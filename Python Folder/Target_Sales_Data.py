@@ -2,95 +2,96 @@ import pandas as pd
 import pyodbc
 import os
 import shutil
-from datetime import datetime
 from dotenv import load_dotenv
+from datetime import datetime
 
-# --- 1. INITIALIZATION & SECURITY ---
-# Load environment variables from the hidden .env file
-load_dotenv()
+# --- 1. PATH SETUP (The "Bulletproof" Way) ---
+# This finds your folders regardless of where you run the terminal from
+base_path = os.path.dirname(os.path.abspath(__file__)) # The 'Python Folder'
+project_root = os.path.dirname(base_path)              # The 'Data_Project' folder
+
+# Define folder paths
+SOURCE_DIR = os.path.join(project_root, 'Source Folder')
+TARGET_DIR = os.path.join(project_root, 'Target Folder')
+ARCHIVE_DIR = os.path.join(project_root, 'Archive_Folder')
+
+# --- 2. LOAD ENVIRONMENT VARIABLES ---
+# We point load_dotenv directly to the file in the current script's folder
+load_dotenv(os.path.join(base_path, '.env'))
 
 DB_SERVER = os.getenv('DB_SERVER')
 DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('DB_USER')
 DB_PASS = os.getenv('DB_PASS')
 
-# Folder Paths
-SOURCE_DIR = '../Source Folder/'
-TARGET_DIR = '../Target Folder/'
-ARCHIVE_DIR = '../Archive_Folder/'
-
-# Ensure necessary directories exist locally
-os.makedirs(TARGET_DIR, exist_ok=True)
-os.makedirs(ARCHIVE_DIR, exist_ok=True)
-
-def run_etl_pipeline():
+def run_etl():
     print(f"Starting ETL Pipeline at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    # --- 2. DATABASE CONNECTION ---
-    # Note: Using ODBC Driver 18 for macOS compatibility
-    conn_str = (
-        f"DRIVER={{ODBC Driver 18 for SQL Server}};"
-        f"SERVER={DB_SERVER};"
-        f"DATABASE={DB_NAME};"
-        f"UID={DB_USER};"
-        f"PWD={DB_PASS};"
-        "Encrypt=yes;"
-        "TrustServerCertificate=yes;" 
-        "ConnectTimeout=30;"
-    )
-    
+    print(f"Looking for files in: {SOURCE_DIR}")
+
+    conn = None
     try:
+        # --- 3. DATABASE CONNECTION ---
+        conn_str = (
+            f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+            f"SERVER={DB_SERVER},1433;"
+            f"DATABASE={DB_NAME};"
+            f"UID={DB_USER};"
+            f"PWD={DB_PASS};"
+            "Encrypt=yes;"
+            "TrustServerCertificate=yes;" # Required for Docker/Local Dev
+            "ConnectTimeout=30;"
+        )
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
+        print("✅ Successfully connected to SQL Server.")
 
-        # --- 3. EXTRACTION (File Pattern Matching) ---
-        files = [f for f in os.listdir(SOURCE_DIR) if f.endswith('.csv') and "Sales_Data" in f]
-
+        # --- 4. EXTRACTION ---
+        files = [f for f in os.listdir(SOURCE_DIR) if f.endswith('.csv')]
+        
         if not files:
-            print(f"No new 'Sales_Data' files found in {SOURCE_DIR}.")
+            print("Empty-handed: No CSV files found in Source Folder.")
             return
 
-        for file_name in files:
-            file_path = os.path.join(SOURCE_DIR, file_name)
-            print(f"Extracting: {file_name}")
-
-            # --- 4. TRANSFORMATION (Business Logic) ---
+        for filename in files:
+            file_path = os.path.join(SOURCE_DIR, filename)
+            print(f"Extracting: {filename}")
+            
+            # Load data
             df = pd.read_csv(file_path)
-            
-            # Standardization: Concatenate names and fix casing
-            df['FullName'] = df['First_Name'].str.strip().str.title() + ' ' + df['Last_Name'].str.strip().str.title()
-            
-            # Data Cleansing: Remove currency symbols and convert to float
-            df['CleanAmount'] = df['Raw_Amount'].replace('[\$,]', '', regex=True).astype(float)
-            
-            # Business Logic: Calculate Tax (Example: 10%)
-            df['Tax_Amount'] = df['CleanAmount'] * 0.10
 
-            # --- 5. LOADING (Multi-Destination) ---
-            # Destination A: SQL Server (Record Keeping)
-            for _, row in df.iterrows():
+            # --- 5. TRANSFORMATION (Example: Clean names and add a timestamp) ---
+            # Make sure your CSV columns match these, or adjust as needed!
+            df.columns = [c.strip().replace(' ', '_').lower() for c in df.columns]
+            df['processed_at'] = datetime.now()
+
+            # --- 6. LOADING ---
+            # Replace 'Your_Table_Name' with the actual table in your DB
+            # We use a simple loop here for your 2,000 rows
+            for index, row in df.iterrows():
+                # Example SQL - adjust the column names to match your table!
                 cursor.execute("""
-                    INSERT INTO FIN_SALES_REPORTING_BASE (TRANS_ID, CUSTOMER_FULL_NAME, NET_SALES_AMT, TAX_AMT)
-                    VALUES (?, ?, ?, ?)
-                """, row['Order_ID'], row['FullName'], row['CleanAmount'], row['Tax_Amount'])
+                    INSERT INTO Your_Table_Name (column1, column2, processed_at)
+                    VALUES (?, ?, ?)
+                """, row['column1'], row['column2'], row['processed_at'])
             
             conn.commit()
-            print(f"Successfully loaded {len(df)} rows to SQL Server.")
+            print(f"Loaded {len(df)} rows into the database.")
 
-            # Destination B: Target Folder (Business Reporting)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            df.to_csv(os.path.join(TARGET_DIR, f"Cleaned_Financials_{timestamp}.csv"), index=False)
-
-            # --- 6. ARCHIVING (Audit Trail) ---
-            shutil.move(file_path, os.path.join(ARCHIVE_DIR, f"Processed_{timestamp}_{file_name}"))
-            print(f"Original file moved to Archive Folder.")
+            # --- 7. ARCHIVING ---
+            # Move the file so it doesn't get processed again next time
+            if not os.path.exists(ARCHIVE_DIR):
+                os.makedirs(ARCHIVE_DIR)
+            
+            shutil.move(file_path, os.path.join(ARCHIVE_DIR, filename))
+            print(f"Moved {filename} to Archive_Folder.")
 
     except Exception as e:
         print(f"Pipeline Error: {e}")
+    
     finally:
-        if 'conn' in locals():
+        if conn:
             conn.close()
             print("Database connection closed.")
 
 if __name__ == "__main__":
-    run_etl_pipeline()
+    run_etl()
