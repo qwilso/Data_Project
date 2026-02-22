@@ -15,9 +15,9 @@ DB_USER = os.getenv('DB_USER')
 DB_PASS = os.getenv('DB_PASS')
 
 # Folder Paths
-SOURCE_DIR = './Source Folder/'
-TARGET_DIR = './Target Folder/'
-ARCHIVE_DIR = './Archive_Folder/'
+SOURCE_DIR = '../Source Folder/'
+TARGET_DIR = '../Target Folder/'
+ARCHIVE_DIR = '../Archive_Folder/'
 
 # Ensure necessary directories exist locally
 os.makedirs(TARGET_DIR, exist_ok=True)
