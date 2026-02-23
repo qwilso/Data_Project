@@ -91,7 +91,7 @@ def run_etl():
             # --- 6. LOADING ---
             for index, row in df.iterrows():
                 cursor.execute("""
-                    INSERT INTO Target_Sales_Table (
+                    INSERT INTO dbo.FIN_SALES_REPORTING_BASE (
                         TRANS_ID, CUSTOMER_FULL_NAME, CALENDAR_DATE, 
                         REPORTING_REGION, NET_SALES_AMT, TAX_AMT, 
                         GROSS_SALES_AMT, LOAD_TIMESTAMP
