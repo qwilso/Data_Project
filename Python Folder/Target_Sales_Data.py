@@ -90,6 +90,26 @@ def run_etl():
             # LOAD_TIMESTAMP
             df['load_timestamp'] = datetime.now()
 
+            # --- 6A. WRITE TRANSFORMED CSV TO TARGET FOLDER ---
+            if not os.path.exists(TARGET_DIR):
+                os.makedirs(TARGET_DIR)
+
+            target_filename = f"transformed_{os.path.splitext(filename)[0]}.csv"
+            target_file_path = os.path.join(TARGET_DIR, target_filename)
+
+            output_columns = [
+                'order_id',
+                'customer_full_name',
+                'calendar_date',
+                'reporting_region',
+                'net_sales_amt',
+                'tax_amt',
+                'gross_sales_amt',
+                'load_timestamp'
+            ]
+            df[output_columns].to_csv(target_file_path, index=False)
+            print(f"Wrote transformed file to Target_Folder: {target_filename}")
+
             # --- 6. LOADING ---
             for index, row in df.iterrows():
                 try:
