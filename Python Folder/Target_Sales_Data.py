@@ -67,8 +67,13 @@ def run_etl():
             # CUSTOMER_FULL_NAME: Combine First and Last Name and Title Case it
             df['customer_full_name'] = (df['first_name'] + ' ' + df['last_name']).str.title()
 
-            # CALENDAR_DATE: Convert string to Date
-            df['calendar_date'] = pd.to_datetime(df['trans_date']).dt.date
+            # CALENDAR_DATE: Convert string to Date (supports mixed formats)
+            df['calendar_date'] = pd.to_datetime(
+                df['trans_date'],
+                format='mixed',
+                dayfirst=True,
+                errors='coerce'
+            ).dt.date
 
             # REPORTING_REGION: Uppercase for reporting consistency
             df['reporting_region'] = df['region'].str.upper()
@@ -111,6 +116,8 @@ def run_etl():
             print(f"Wrote transformed file to Target_Folder: {target_filename}")
 
             # --- 6. LOADING ---
+            inserted_count = 0
+            failed_count = 0
             for index, row in df.iterrows():
                 try:
                     cursor.execute(
@@ -131,13 +138,18 @@ def run_etl():
                         float(row['gross_sales_amt']), # Force standard float for DECIMAL(18,2)
                         row['load_timestamp']
                     )
+                    inserted_count += 1
                 except Exception as row_err:
                     print(f"Error inserting row {index}: {row_err}")
                     # This will tell us EXACTLY which row is failing if it happens, and we can skip it without breaking the entire load process.
+                    failed_count += 1
                     continue
             
             conn.commit()
-            print(f"Successfully loaded {len(df)} rows into Target_Sales_Table.")
+            print(
+                "Load summary: "
+                f"{inserted_count} inserted, {failed_count} failed, {len(df)} total rows."
+            )
 
             # --- 7. ARCHIVING ---
             if not os.path.exists(ARCHIVE_DIR):
