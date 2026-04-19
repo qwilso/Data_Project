@@ -1,0 +1,16 @@
+Order_ID,First_Name,Last_Name,Trans_Date,Region,Currency_Code,Raw_Amount,Tax_Rate
+200,Emma,Johnson,2024-05-01,North,USD,$262.05,0.05
+201,Isabella,Williams,2024-05-02,South,USD,$78.31,0.06
+202,Olivia,Martinez,2024-05-03,West,USD,$238.9,0.08
+203,Olivia,Rodriguez,2024-05-04,North,USD,$770.87,0.06
+204,Sophia,Miller,2024-05-05,North,USD,$254.55,0.07
+205,Emma,Williams,2024-05-06,South,USD,$391.03,0.07
+206,Lucas,Garcia,2024-05-07,West,USD,$559.42,0.08
+207,Emma,Martinez,2024-05-08,North,USD,$891.18,0.07
+208,Lucas,Jones,2024-05-09,West,USD,$678.2,0.07
+209,Emma,Jones,2024-05-10,West,USD,$314.07,0.07
+210,Noah,Miller,2024-05-11,North,USD,$686.67,0.05
+211,Lucas,Brown,2024-05-12,East,USD,$489.15,0.07
+212,Isabella,Jones,2024-05-13,North,USD,$267.6,0.05
+213,Elijah,Davis,2024-05-14,North,USD,$250.43,0.07
+214,Olivia,Rodriguez,2024-05-15,South,USD,$185.73,0.06

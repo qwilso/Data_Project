@@ -1,0 +1,7 @@
+Order_ID,First_Name,Last_Name,Trans_Date,Region,Currency_Code,Raw_Amount,Tax_Rate
+101,john,doe,2024-01-15,West,USD,$100,0.07
+102,MARY,,15/02/2024,east,usd,$200.50,0.08
+103,Alice,SMITH,March 5 2024,NORTH,EUR,300,
+104,bob,O'neal,2024/04/01,South,USD,$-50,0.05
+105,,brown,invalid_date,west,GBP,"$1,000",0.2
+106,CHARLIE,,,EAST,USD,,-0.01
