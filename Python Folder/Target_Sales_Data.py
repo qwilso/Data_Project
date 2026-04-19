@@ -115,40 +115,61 @@ def run_etl():
             df[output_columns].to_csv(target_file_path, index=False)
             print(f"Wrote transformed file to Target_Folder: {target_filename}")
 
-            # --- 6. LOADING ---
-            inserted_count = 0
+            # --- 6. LOADING (MERGE: update if TRANS_ID exists, else insert) ---
+            merged_count = 0
             failed_count = 0
+            merge_sql = """
+                MERGE dbo.FIN_SALES_REPORTING_BASE AS t
+                USING (
+                    SELECT ? AS TRANS_ID, ? AS CUSTOMER_FULL_NAME, ? AS CALENDAR_DATE,
+                           ? AS REPORTING_REGION, ? AS NET_SALES_AMT, ? AS TAX_AMT,
+                           ? AS GROSS_SALES_AMT, ? AS LOAD_TIMESTAMP
+                ) AS s
+                ON t.TRANS_ID = s.TRANS_ID
+                WHEN MATCHED THEN
+                    UPDATE SET
+                        t.CUSTOMER_FULL_NAME = s.CUSTOMER_FULL_NAME,
+                        t.CALENDAR_DATE = s.CALENDAR_DATE,
+                        t.REPORTING_REGION = s.REPORTING_REGION,
+                        t.NET_SALES_AMT = s.NET_SALES_AMT,
+                        t.TAX_AMT = s.TAX_AMT,
+                        t.GROSS_SALES_AMT = s.GROSS_SALES_AMT,
+                        t.LOAD_TIMESTAMP = s.LOAD_TIMESTAMP
+                WHEN NOT MATCHED BY TARGET THEN
+                    INSERT (
+                        TRANS_ID, CUSTOMER_FULL_NAME, CALENDAR_DATE,
+                        REPORTING_REGION, NET_SALES_AMT, TAX_AMT,
+                        GROSS_SALES_AMT, LOAD_TIMESTAMP
+                    )
+                    VALUES (
+                        s.TRANS_ID, s.CUSTOMER_FULL_NAME, s.CALENDAR_DATE,
+                        s.REPORTING_REGION, s.NET_SALES_AMT, s.TAX_AMT,
+                        s.GROSS_SALES_AMT, s.LOAD_TIMESTAMP
+                    );
+            """
             for index, row in df.iterrows():
                 try:
                     cursor.execute(
-                        """
-                        INSERT INTO dbo.FIN_SALES_REPORTING_BASE (
-                            TRANS_ID, CUSTOMER_FULL_NAME, CALENDAR_DATE, 
-                            REPORTING_REGION, NET_SALES_AMT, TAX_AMT, 
-                            GROSS_SALES_AMT, LOAD_TIMESTAMP
-                        )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        """, 
+                        merge_sql,
                         int(row['order_id']),
                         str(row['customer_full_name']),
                         row['calendar_date'],
                         str(row['reporting_region']),
-                        float(row['net_sales_amt']),   # Force standard float for DECIMAL(18,2)
-                        float(row['tax_amt']),         # Force standard float for DECIMAL(18,2)
-                        float(row['gross_sales_amt']), # Force standard float for DECIMAL(18,2)
-                        row['load_timestamp']
+                        float(row['net_sales_amt']),
+                        float(row['tax_amt']),
+                        float(row['gross_sales_amt']),
+                        row['load_timestamp'],
                     )
-                    inserted_count += 1
+                    merged_count += 1
                 except Exception as row_err:
-                    print(f"Error inserting row {index}: {row_err}")
-                    # This will tell us EXACTLY which row is failing if it happens, and we can skip it without breaking the entire load process.
+                    print(f"Error merging row {index}: {row_err}")
                     failed_count += 1
                     continue
-            
+
             conn.commit()
             print(
                 "Load summary: "
-                f"{inserted_count} inserted, {failed_count} failed, {len(df)} total rows."
+                f"{merged_count} merged (insert/update), {failed_count} failed, {len(df)} total rows."
             )
 
             # --- 7. ARCHIVING ---
